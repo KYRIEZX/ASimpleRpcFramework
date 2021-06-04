@@ -1,6 +1,8 @@
-package com.kyriez.Server;
+package com.kyriez.Server.socket;
 
 import com.kyriez.Registry.DefaultServiceRegistry;
+import com.kyriez.Server.RequestHandler;
+import com.kyriez.Server.RequestHandlerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +14,7 @@ public class RpcServer {
     private final ExecutorService threadPool;
     private static final Logger logger = LoggerFactory.getLogger(RpcServer.class);
     private final DefaultServiceRegistry serviceRegistry;
+    private RequestHandler requestHandler = new RequestHandler();
 
     public RpcServer(DefaultServiceRegistry serviceRegistry) {
         this.serviceRegistry = serviceRegistry;
@@ -26,19 +29,18 @@ public class RpcServer {
 
     /**
      * 对外暴露接口
-     */
-    public void register(Object service, int port){
+     c  */
+    public void start(int port){
         try(ServerSocket serverSocket = new ServerSocket(port)){
             logger.info("服务器正在启动...");
             Socket socket;
             while((socket = serverSocket.accept()) != null){
                 logger.info("客户端连接！Ip为：" + socket.getInetAddress());
-
-                threadPool.execute(new WorkerThread(socket, service));
-
+                threadPool.execute(new RequestHandlerThread(requestHandler, serviceRegistry, socket));
             }
+            threadPool.shutdown();
         }catch (Exception e){
-            logger.error("Server "+e);
+            logger.error("Server: "+e);
         }
     }
 }

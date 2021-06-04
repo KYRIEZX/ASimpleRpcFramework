@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,8 +15,8 @@ public class DefaultServiceRegistry implements ServiceRegistry {
 
     private static Logger logger = LoggerFactory.getLogger(DefaultServiceRegistry.class);
 
-    private final Map<String, Object> serviceMap = new ConcurrentHashMap<>();
-    private final Set<String> registeredService = ConcurrentHashMap.newKeySet();
+    private static final Map<String, Object> serviceMap = new ConcurrentHashMap<>();
+    private static final Set<String> registeredService = ConcurrentHashMap.newKeySet();
 
 
     @Override
@@ -35,9 +36,10 @@ public class DefaultServiceRegistry implements ServiceRegistry {
 
     @Override
     public Object getService(String ServiceName) {
-        if(!registeredService.contains(ServiceName)){
+        Object service = serviceMap.get(ServiceName);
+        if(service == null){
             throw new RpcExeption(RpcError.SERVICE_NOT_FOUND);
         }
-        return serviceMap.get(ServiceName);
+        return service;
     }
 }

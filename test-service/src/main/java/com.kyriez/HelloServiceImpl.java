@@ -7,7 +7,7 @@ public class HelloServiceImpl implements HelloService{
     private Logger logger = LoggerFactory.getLogger(HelloServiceImpl.class);
     @Override
     public String hello(HelloObject hello) {
-        logger.info("Received the hello object " + hello.getMessage());
-        return "Return hello " + hello.getId();
+        logger.info("Received the hello object " + hello.getId());
+        return "Hello " + hello.getMessage();
     }
 }

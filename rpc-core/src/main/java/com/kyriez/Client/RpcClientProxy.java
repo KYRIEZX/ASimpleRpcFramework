@@ -1,5 +1,6 @@
 package com.kyriez.Client;
 
+import com.kyriez.Client.Netty.NettyClient;
 import com.kyriez.entity.RpcRequest;
 import com.kyriez.entity.RpcResponse;
 import lombok.AllArgsConstructor;
@@ -12,13 +13,13 @@ import java.lang.reflect.Proxy;
 
 @Data
 public class RpcClientProxy implements InvocationHandler {
-    private String host;
-    private int port;
+    private final Client client;
 
-    public RpcClientProxy(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public RpcClientProxy(NettyClient client) {
+        this.client = client;
     }
+
+
 
     @SuppressWarnings("unchecked")
     public <T> T getProxy(Class<T> clazz) {
@@ -31,15 +32,11 @@ public class RpcClientProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        RpcRequest rpcRequest = RpcRequest.builder()
-                .InterfaceName(method.getDeclaringClass().getName())
-                .MethodName(method.getName())
-                .params(args)
-                .paramType(method.getParameterTypes())
-                .build();
+        RpcRequest rpcRequest = new RpcRequest(method.getDeclaringClass().getName(),
+                                    method.getName(), args, method.getParameterTypes());
 
-        RpcClient client = new RpcClient();
-        return ((RpcResponse) client.SendRequest(rpcRequest, host, port)).getData();
+
+        return client.SendRequest(rpcRequest);
 
 
     }
