@@ -1,7 +1,8 @@
 package com.kyriez.Registry;
 
-public interface ServiceRegistry {
+import java.net.InetSocketAddress;
 
-    <T> void register(T service);
-    Object getService(String ServiceName);
+public interface ServiceRegistry {
+    void register(String serviceName, InetSocketAddress inetSocketAddress);
+    InetSocketAddress lookupService(String serviceName);
 }

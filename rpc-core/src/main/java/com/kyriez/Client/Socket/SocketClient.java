@@ -1,17 +1,13 @@
-package com.kyriez.Client;
+package com.kyriez.Client.Socket;
 
+import com.kyriez.Client.Client;
 import com.kyriez.entity.RpcRequest;
-import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.net.Socket;
-import java.util.concurrent.TimeUnit;
 
-
-public class RpcClient implements Client{
-    Logger logger = LoggerFactory.getLogger(RpcClient.class);
+public class SocketClient implements Client {
+    Logger logger = LoggerFactory.getLogger(SocketClient.class);
 
 
     @Override
