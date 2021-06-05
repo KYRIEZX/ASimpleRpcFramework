@@ -1,5 +1,6 @@
 package com.kyriez.Server.Netty;
 
+import com.kyriez.Client.Netty.ShutDownHook;
 import com.kyriez.Coder.CommonDecoder;
 import com.kyriez.Coder.CommonEncoder;
 import com.kyriez.Registry.Nacos.NacosServiceRegistry;
@@ -39,7 +40,7 @@ public class NettyServer implements Server {
         this.host = host;
         this.port = port;
         serviceProvider = new ServiceProviderImp();
-        serviceRegistry = new NacosServiceRegistry();
+        serviceRegistry = new NacosServiceRegistry(null);
     }
 
     public <T> void publishService(Object service, Class<T> serviceClass){
@@ -85,6 +86,8 @@ public class NettyServer implements Server {
                     });
             //绑定端口并启动服务器
             ChannelFuture future = bootstrap.bind(host, port).sync();
+            //添加注销用的钩子
+            ShutDownHook.getShutDownHook().addClearAllHook();
             //对通道关闭事件进行监听
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {

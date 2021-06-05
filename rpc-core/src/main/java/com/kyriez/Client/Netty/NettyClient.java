@@ -35,7 +35,7 @@ public class NettyClient implements Client {
     private static CommonSerializer serializer;
 
     public NettyClient() {
-        this.serviceRegistry = new NacosServiceRegistry();
+        this.serviceRegistry = new NacosServiceRegistry(null);
     }
 
     static{
